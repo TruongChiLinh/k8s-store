@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multi-access-deployment
+  namespace: practice-store
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: multi-access-app
+  template:
+    metadata:
+      labels:
+        app: multi-access-app
+    spec:
+      containers:
+      - name: app-container
+        image: nginx
+        volumeMounts:
+        - name: storage-rwo
+          mountPath: /mnt/rwo
+        - name: storage-rox
+          mountPath: /mnt/rox
+        - name: storage-rwx
+          mountPath: /mnt/rwx
+        - name: storage-rwop
+          mountPath: /mnt/rwop
+      volumes:
+      - name: storage-rwo
+        persistentVolumeClaim:
+          claimName: pvc-rwo
+      - name: storage-rox
+        persistentVolumeClaim:
+          claimName: pvc-rox
+      - name: storage-rwx
+        persistentVolumeClaim:
+          claimName: pvc-rwx
+      - name: storage-rwop
+        persistentVolumeClaim:
+          claimName: pvc-rwop
